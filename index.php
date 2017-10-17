@@ -13,9 +13,6 @@ if (isset($_GET['page']))
 		case 'paste':
 			require_once('pages/paste.php');
 			break;
-		case 'new':
-			require_once('pages/new.php');
-			break;
 		case 'view':
 			require_once('pages/view.php');
 			break;
@@ -37,7 +34,7 @@ else
 	<link rel="stylesheet" type="text/css" href="resources/external/bootstrap-select/css/bootstrap-select.css" />
 	<!-- Custom -->
 	<link rel="stylesheet" type="text/css" href="resources/css/main.css" />
-	<title><?php echo $config['website'] . " - " . $title ?></title>
+	<title><?php echo (!empty($title)) ? $config['website'] . " - " . $title : $config['website']; ?></title>
 </head>
 
 <body>

@@ -5,7 +5,7 @@ class Database
 	public $res;
 	public $echo_errors;
 
-	public function __construct($config, $echo_errors=False)
+	public function __construct($config, $echo_errors = false)
 	{
 		$this->echo_errors = $echo_errors;
 
@@ -31,6 +31,5 @@ class Database
 	{
 		if ($this->echo_errors)
 			echo('Database error: ' . htmlspecialchars($exception->getMessage()));
-		error_log('PW database error: ' . $exception->getMessage() . "; at " . $exception->getFile() . ":" . $exception->getLine());
 	}
 }
