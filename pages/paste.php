@@ -4,20 +4,20 @@ $title = "";
 
 function show_page()
 {
-	global $title;
-	
 	?>
-	<form action="?new" method="POST">
+	<form action="?paste" method="POST">
 		<div class="mt-3">
 			<h2>New Paste</h2>
 			<hr>
 		</div>
 
+		<input type="hidden" name="paste_post"></input>
+
 		<div class="row">
 			<div class="col-sm-5">
-				<label for="title">Title</label>
+				<label for="paste_title">Title</label>
 				<div class="input-group">
-					<input type="text" class="form-control" id="title" name="title" placeholder="Title" maxlength="50">
+					<input type="text" class="form-control" id="paste_title" name="paste_title" placeholder="Title" maxlength="50">
 				</div>
 			</div>
 		</div>
@@ -27,7 +27,7 @@ function show_page()
 		<div class="row">
 			<div class="col-sm-2">
 				<label for="paste_expiration">Expiration</label>
-				<select name="expiration" id="paste_expiration" class="form-control form-control-sm">
+				<select name="paste_expiration" id="paste_expiration" class="form-control form-control-sm">
 					<option value="1h">1 Hour</option>
 					<option value="1d">1 Day</option>
 					<option value="1w">1 Week</option>
@@ -53,7 +53,7 @@ function show_page()
 				<div class="form-group">
 					<label for="paste_language">Syntax Highlighting</label>
 					<select name="paste_language" id="paste_language" data-show-subtext="true" data-live-search="true" class="selectpicker form-control">
-						<option value="raw" default>Raw Text</option>
+						<option value="text" default>Raw Text</option>
 						<option value="abap">ABAP</option>
 						<option value="actionscript">ActionScript</option>
 						<option value="actionscript3">ActionScript 3</option>
@@ -275,7 +275,6 @@ function show_page()
 						<option value="tclegg">TCLEGG</option>
 						<option value="teraterm">Tera Term Macro</option>
 						<option value="texgraph">TeXgraph</option>
-						<option value="text">Text</option>
 						<option value="thinbasic">thinBasic</option>
 						<option value="tsql">T-SQL</option>
 						<option value="twig">Twig</option>

@@ -1,9 +1,13 @@
 <?php
 require_once "config/config.php";
-require_once "classes/Database.php";
 
-$db = new Database($config);
-if ($db->res == null)
+require_once "classes/Base.php";
+require_once "classes/Database.php";
+require_once "classes/Paste.php";
+
+require_once "lib/geshi/geshi.php";
+
+if (!$Database->isConnected())
 	die("Could not connect to the database");
 
 if (isset($_GET['page']))
@@ -45,9 +49,9 @@ else
 		<div class="col-sm-10">
 			<div class="container-fluid">
 
-<?php
-show_page();
-?>
+				<?php
+				show_page();
+				?>
 
 			</div>
 		</div>

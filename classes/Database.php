@@ -1,19 +1,18 @@
 <?php
 
-class Database
+class Database extends Base
 {
-	public $res;
-	public $echo_errors;
+	private $echo_errors;
 
-	public function __construct($config, $echo_errors = false)
+	public function connect($echo_errors = false)
 	{
 		$this->echo_errors = $echo_errors;
 
 		try
 		{
-			$this->res = new PDO(
-				'mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'],
-				$config['db']['username'], $config['db']['password'],
+			$this->sqlres = new PDO(
+				'mysql:host=' . $this->config['db']['host'] . ';dbname=' . $this->config['db']['name'],
+				$this->config['db']['username'], $this->config['db']['password'],
 				array(
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 					PDO::ATTR_PERSISTENT => true
@@ -22,14 +21,33 @@ class Database
 		}
 		catch (PDOException $e)
 		{
-			$this->log_error($e);
-			$this->res = null;
+			$this->logError($e);
+			$this->sqlres = null;
 		}
 	}
 
-	private function log_error($exception)
+	public function isConnected()
+	{
+		return ($this->sqlres != null);
+	}
+
+	public function setEchoErrors($echo_errors)
+	{
+		$this->echo_errors = $echo_errors;
+	}
+
+	public function getEchoErrors($echo_errors)
+	{
+		return $this->echo_errors;
+	}
+
+	private function logError($exception)
 	{
 		if ($this->echo_errors)
 			echo('Database error: ' . htmlspecialchars($exception->getMessage()));
 	}
 }
+
+$Database = new Database();
+$Database->setConfig($config);
+$Database->connect();
