@@ -2,27 +2,29 @@
 
 class Paste extends Base
 {
+	private $id = null;
 	private $title = null;
 	private $owner_ip = null;
+	private $creation_epoch = null;
 	private $expiration_epoch = null;
 	private $autodestroy = null;
-	private $syntax_highligting = null;
+	private $syntax_highlighting = null;
 	private $content = null;
 	private $access = null;
 	private $views = null;
 	private $deleted = null;
 
 	private $is_published = false;
-	private $id = 0;
 
 	public function publish()
 	{
 		try
 		{
-			$stmt = $this->sqlres->prepare("INSERT INTO `paste` (title, owner_ip, expiration_epoch, autodestroy, syntax_highlighting, content, access_id) VALUES (:title, INET_ATON(:owner_ip), :expiration_epoch, :autodestroy, :syntax_highlighting, :content, :access_id);");
+			$stmt = $this->sqlres->prepare("INSERT INTO `paste` (title, owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id) VALUES (:title, INET_ATON(:owner_ip), :creation_epoch, :expiration_epoch, :autodestroy, :syntax_highlighting, :content, :access_id);");
 			$stmt->execute(array(
 				':title' => $this->title,
 				':owner_ip' => $this->owner_ip,
+				':creation_epoch' => $this->creation_epoch,
 				':expiration_epoch' => $this->expiration_epoch,
 				':autodestroy' => $this->autodestroy,
 				':syntax_highlighting' => $this->syntax_highlighting,
@@ -41,10 +43,23 @@ class Paste extends Base
 		return true;
 	}
 
+	public function geshiParse()
+	{
+		$Geshi = new Geshi($this->content, $this->syntax_highlighting);
+		if ($Geshi->error())
+		{
+			$this->setErrorStr("Could not parse given paste");
+			return false;
+		}
+		$Geshi->enable_line_numbers(GESHI_FANCY_LINE_NUMBERS);
+		return $Geshi->parse_code();
+	}
+
 	public function loadFromPost(&$post)
 	{
 		$this->title = (isset($post['paste_title']) && !empty($post['paste_title'])) ? htmlspecialchars($post['paste_title']) : "Without Title";
 		$this->owner_ip = $_SERVER['REMOTE_ADDR'];
+		$this->creation_epoch = time();
 		$this->expiration_epoch = $this->expirationToTimeStamp($post['expiration']);
 		$this->autodestroy = isset($post['paste_autodestroy']);
 		$this->syntax_highlighting = $post['paste_language'];
@@ -104,16 +119,6 @@ class Paste extends Base
 		return (isset($post['paste_post']));
 	}
 
-	public function getIsPublished()
-	{
-		return ($this->is_published);
-	}
-
-	public function getId()
-	{
-		return ($this->$id);
-	}
-
 	public function loadFromId($id)
 	{
 		$row = false;
@@ -125,9 +130,9 @@ class Paste extends Base
 		}
 		try
 		{
-			$stmt = $this->sqlres->prepare("SELECT * FROM paste WHERE id = ':id' LIMIT 1;");
+			$stmt = $this->sqlres->prepare("SELECT id, title, INET_NTOA(owner_ip) AS owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id, views, deleted FROM paste WHERE id = :id LIMIT 1;");
 			$stmt->execute(array(":id" => $id));
-			if (!($row = $stmt->fetch(PDO::FETCH_ASSOC)))
+			if (!($row = $stmt->fetch()))
 				throw new Exception();
 		}
 		catch (Exception $e)
@@ -138,25 +143,29 @@ class Paste extends Base
 
 		$this->title = $row['title'];
 		$this->owner_ip = $row['owner_ip'];
+		$this->creation_epoch = $row['creation_epoch'];
 		$this->expiration_epoch = $row['expiration_epoch'];
 		$this->autodestroy = $row['autodestroy'];
-		$this->syntax_highligting = $row['syntax_highlighting'];
+		$this->syntax_highlighting = $row['syntax_highlighting'];
 		$this->content = $row['content'];
-		$this->access = $row['access'];
+		$this->access = $row['access_id'];
 		$this->views = $row['views'];
 		$this->deleted = $row['deleted'];
 
 		$this->is_published = true;
 		$this->id = $row['id'];
+
+		return true;
 	}
 
 	public function discard()
 	{
 		$this->title = null;
 		$this->owner_ip = null;
+		$this->creation_epoch = null;
 		$this->expiration_epoch = null;
 		$this->autodestroy = null;
-		$this->syntax_highligting = null;
+		$this->syntax_highlighting = null;
 		$this->content = null;
 		$this->access = null;
 		$this->views = null;
@@ -196,6 +205,68 @@ class Paste extends Base
 		}
 		
 		return (time() + $timeToAdd);
+	}
+
+	/* Getters / Setters */
+
+	public function getId()
+	{
+		return $this->id;
+	}
+
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	public function getOwnerIp()
+	{
+		return $this->owner_ip;
+	}
+
+	public function getCreationEpoch()
+	{
+		return $this->creation_epoch;
+	}
+
+	public function getExpirationEpoch()
+	{
+		return $this->expiration_epoch;
+	}
+
+	public function getAutodestroy()
+	{
+		return $this->autodestroy;
+	}
+
+	public function getSyntaxHighlighting()
+	{
+		return $this->syntax_highlighting;
+	}
+
+	public function getContent()
+	{
+		return $this->content;
+	}
+
+	public function getAccess()
+	{
+		return $this->access;
+	}
+
+	public function getViews()
+	{
+		return $this->views;
+	}
+
+	public function getDeleted()
+	{
+		return $this->deleted;
+	}
+
+	public function getIsPublished()
+	{
+		return $this->is_published;
 	}
 }
 

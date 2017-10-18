@@ -1,13 +1,13 @@
 <?php
 
-$title = "";
-
 function show_page()
 {
-	pastePublish();
+	global $Paste;
+
+	pastePublish($Paste);
 
 	?>
-	<form action="?paste" method="POST">
+	<form action="?page=paste" method="POST">
 		<div class="mt-3">
 			<h2>New Paste</h2>
 			<hr>
@@ -343,10 +343,8 @@ function show_page()
 	<?php
 }
 
-function pastePublish()
+function pastePublish(&$Paste)
 {
-	global $Paste;
-
 	if (!$Paste->isPosted($_POST))
 		return;
 	if (!$Paste->isPostValid($_POST))
