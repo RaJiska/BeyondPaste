@@ -4,6 +4,8 @@ $title = "";
 
 function show_page()
 {
+	pastePublish();
+
 	?>
 	<form action="?paste" method="POST">
 		<div class="mt-3">
@@ -331,26 +333,25 @@ function show_page()
 					<span class="badge badge-default">Default</span>
 				</label>
 			</div>
-
-			<div class="form-check">
-				<label class="form-check-label">
-				<input class="form-check-input" type="radio" name="paste_access" value="accesspass">
-					Password
-				</label>
-			</div>
-
-			<div class="form-check">
-				<label class="form-check-label">
-				<input class="form-check-input" type="radio" name="paste_access" value="accessip">
-					IP Whitelist
-				</label>
-			</div>
 		</div>
 
 		<div class="row-fluid">
 			<hr>
-			<button type="button" class="btn btn-success">Create Paste</button>
+			<button type="submit" class="btn btn-success">Create Paste</button>
 		</div>
 	</form>
 	<?php
+}
+
+function pastePublish()
+{
+	global $Paste;
+
+	if (!$Paste->isPosted($_POST))
+		return;
+	if (!$Paste->isPostValid($_POST))
+		return;
+	$Paste->loadFromPost($_POST);
+	if (!$Paste->publish())
+		return;
 }

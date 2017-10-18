@@ -31,8 +31,8 @@ class Base
 		$this->error_str = $error_str;
 	}
 	
-	public function getErrorStr($error_str)
+	public function getErrorStr()
 	{
-		return $error_str;
+		return $this->error_str;
 	}
 }

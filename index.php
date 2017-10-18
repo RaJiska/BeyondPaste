@@ -68,8 +68,7 @@ else
 <script src="resources/external/bootstrap-select/js/bootstrap-select.min.js"></script>
 
 <script type="text/javascript">
-    $('.selectpicker').selectpicker({
-      });
+    $('.selectpicker').selectpicker({ });
 </script>
 
 </body>
