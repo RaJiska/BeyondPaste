@@ -14,13 +14,14 @@ class Paste extends Base
 	private $views = null;
 	private $deleted = null;
 
+	private $is_loaded = false;
 	private $is_published = false;
 
 	public function publish()
 	{
 		try
 		{
-			$stmt = $this->sqlres->prepare("INSERT INTO `paste` (title, owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id) VALUES (:title, INET_ATON(:owner_ip), :creation_epoch, :expiration_epoch, :autodestroy, :syntax_highlighting, :content, :access_id);");
+			$stmt = $this->sqlres->prepare("INSERT INTO `paste` (title, owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id, views, deleted) VALUES (:title, INET_ATON(:owner_ip), :creation_epoch, :expiration_epoch, :autodestroy, :syntax_highlighting, :content, :access_id, :views, :deleted);");
 			$stmt->execute(array(
 				':title' => $this->title,
 				':owner_ip' => $this->owner_ip,
@@ -29,12 +30,14 @@ class Paste extends Base
 				':autodestroy' => $this->autodestroy,
 				':syntax_highlighting' => $this->syntax_highlighting,
 				':content' => $this->content,
-				':access_id' => $this->access
+				':access_id' => $this->access,
+				':views' => $this->views,
+				':deleted' => $this->deleted
 			));
 		}
 		catch (PDOException $e)
 		{
-			$this->setErrorStr("Paste Publish: SQL Request Failed, please contant the system adminsitrator");
+			$this->setErrorStr("Paste Publish: SQL Request Failed");
 			return false;
 		}
 
@@ -43,8 +46,60 @@ class Paste extends Base
 		return true;
 	}
 
+	public function update()
+	{
+		if (!$this->is_published)
+			return false;
+		try
+		{
+			$stmt = $this->sqlres->prepare("UPDATE `paste` SET title = :title, owner_ip = INET_ATON(:owner_ip), creation_epoch = :creation_epoch, expiration_epoch = :expiration_epoch, autodestroy = :autodestroy, syntax_highlighting = :syntax_highlighting, content = :content, access_id = :access_id, views = :views, deleted = :deleted WHERE id = :id;");
+			$stmt->execute(array(
+				':title' => $this->title,
+				':owner_ip' => $this->owner_ip,
+				':creation_epoch' => $this->creation_epoch,
+				':expiration_epoch' => $this->expiration_epoch,
+				':autodestroy' => $this->autodestroy,
+				':syntax_highlighting' => $this->syntax_highlighting,
+				':content' => $this->content,
+				':access_id' => $this->access,
+				':views' => $this->views,
+				':deleted' => $this->deleted,
+				':id' => $this->id
+			));
+		}
+		catch (PDOException $e)
+		{
+			$this->setErrorStr("Paste Update: SQL Request Failed");
+			return false;
+		}
+
+		return true;
+	}
+
+	public function delete()
+	{
+		if (!$this->is_published)
+			return false;
+		try
+		{
+			$stmt = $this->sqlres->prepare("DELETE FROM `paste` WHERE id = :id;");
+			$stmt->execute(array(':id' => $this->id));
+		}
+		catch (PDOException $e)
+		{
+			$this->setErrorStr("Paste Delete: SQL Request Failed");
+			return false;
+		}
+
+		$this->discard();
+		return true;
+	}
+
 	public function geshiParse()
 	{
+		if (!$this->is_loaded)
+			return false;
+
 		$Geshi = new Geshi($this->content, $this->syntax_highlighting);
 		if ($Geshi->error())
 		{
@@ -67,6 +122,9 @@ class Paste extends Base
 		$this->access = $post['paste_access'];
 		$this->views = 0;
 		$this->deleted = false;
+
+		$this->is_loaded = true;
+		$this->is_published = false;
 	}
 
 	public function isPostValid(&$post)
@@ -130,7 +188,7 @@ class Paste extends Base
 		}
 		try
 		{
-			$stmt = $this->sqlres->prepare("SELECT id, title, INET_NTOA(owner_ip) AS owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id, views, deleted FROM paste WHERE id = :id LIMIT 1;");
+			$stmt = $this->sqlres->prepare("SELECT id, title, INET_NTOA(owner_ip) AS owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id, views, deleted FROM paste WHERE id = :id AND deleted = '0' LIMIT 1;");
 			$stmt->execute(array(":id" => $id));
 			if (!($row = $stmt->fetch()))
 				throw new Exception();
@@ -141,6 +199,7 @@ class Paste extends Base
 			return false;
 		}
 
+		$this->id = $row['id'];
 		$this->title = $row['title'];
 		$this->owner_ip = $row['owner_ip'];
 		$this->creation_epoch = $row['creation_epoch'];
@@ -152,14 +211,15 @@ class Paste extends Base
 		$this->views = $row['views'];
 		$this->deleted = $row['deleted'];
 
+		$this->is_loaded = true;
 		$this->is_published = true;
-		$this->id = $row['id'];
 
 		return true;
 	}
 
 	public function discard()
 	{
+		$this->id = null;
 		$this->title = null;
 		$this->owner_ip = null;
 		$this->creation_epoch = null;
@@ -171,8 +231,8 @@ class Paste extends Base
 		$this->views = null;
 		$this->deleted = null;
 
+		$this->is_loaded = false;
 		$this->is_published = false;
-		$this->id = 0;
 	}
 
 	private function expirationToTimestamp(&$expiration)
@@ -259,14 +319,19 @@ class Paste extends Base
 		return $this->views;
 	}
 
+	public function setDeleted($deleted)
+	{
+		$this->deleted = $deleted;
+	}
+
 	public function getDeleted()
 	{
 		return $this->deleted;
 	}
 
-	public function getIsPublished()
+	public function getIsLoaded()
 	{
-		return $this->is_published;
+		return $this->is_loaded;
 	}
 }
 

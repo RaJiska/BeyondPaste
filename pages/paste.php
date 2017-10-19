@@ -42,7 +42,7 @@ function show_page()
 			</div>
 
 			<div class="col-sm-3">
-				<div class="form-check mt-4">
+				<div class="form-check pt-4">
 					<label class="form-check-label">
 						<input type="checkbox" id="paste_autodestroy" name="paste_autodestroy"> Automatically destroy after reading</input>
 					</label>

@@ -12,12 +12,13 @@ function show_page()
 		$paste_content = $Paste->getErrorStr();
 
 	?>
-	
+
 	<script>
 		var raw_link = '<?php echo "?page=raw" . (($paste_data['id'] != null) ? "&pid=" . $paste_data['id'] : ""); ?>';
 	</script>
 
 	<?php
+
 	pasteViewDesign($paste_data, $paste_content);
 }
 
@@ -26,11 +27,11 @@ function pasteViewDesign(&$paste_data, &$paste_content)
 	?>
 	<div class="mt-3">
 		<div class="row no-gutters">
-			<div class="col-3">
+			<div class="col-6">
 				<h2><?php echo $paste_data['title'] ?></h2>
 			</div>
 
-			<div class="col-5"></div>
+			<div class="col-2"></div>
 
 			<div class="col-2 pr-2">
 				<button type="button" class="btn btn-secondary btn-block" onclick="window.location=raw_link">
@@ -54,6 +55,18 @@ function pasteViewDesign(&$paste_data, &$paste_content)
 
 	<hr>
 
+	<?php
+	if ($paste_data['destroy'])
+	{
+	?>
+		<div class="alert alert-info" role="alert">
+			<img src="resources/external/octicons/img/info.svg" width=16 height=32 onerror="this.src='lib/octicons/grabber.png'">
+			This paste is set to destroy upon the first read. Refreshing the page, viewing the paste raw, and any other action that may require your page to reload would result in the paste deleting itself.
+		</div>
+	<?php
+	}
+	?>
+
 	<div id="geshicode">
 		<?php
 		echo $paste_content;
@@ -65,12 +78,22 @@ function pasteViewDesign(&$paste_data, &$paste_content)
 function pasteView(&$Paste, &$paste_data)
 {
 	$paste_data['id'] = (isset($_GET['pid'])) ? $_GET['pid'] : null;
+	$paste_data['destroy'] = false;
 	if (!$Paste->loadFromId($paste_data['id']) || !($paste_data['geshi_parsed'] = $Paste->geshiParse()))
 	{
 		$paste_data['title'] = "Oops... :(";
 		return false;
 	}
+
 	$paste_data['title'] = $Paste->getTitle() . " - #" . $Paste->getId();
+	if ($Paste->getAutodestroy() && (
+		($_SERVER['REMOTE_ADDR'] == $Paste->getOwnerIp() && (time() >= $Paste->getCreationEpoch() + 15)) ||
+		$_SERVER['REMOTE_ADDR'] != $Paste->getOwnerIp()))
+	{
+		$paste_data['destroy'] = true;
+		$Paste->setDeleted(true);
+		$Paste->update();
+	}
 	return true;
 }
 

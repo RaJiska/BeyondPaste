@@ -26,9 +26,9 @@ class Page Extends Base
 			echo("<body>");
 			echo("<div class=\"container-fluid\">");
 			echo("<div class=\"row\">");
-			echo("<div class=\"col-sm-1\"></div>");
-			echo("<div class=\"col-sm-10\">");
-			echo("<div class=\"container-fluid\">");
+			echo("<div class=\"col-sm-2\"></div>");
+			echo("<div class=\"col-sm-8\">");
+			echo("<div class=\"container-fluid pt-4\">");
 		}
 		else
 			header("Content-Type: text/plain");
@@ -37,6 +37,7 @@ class Page Extends Base
 
 		if (!$this->output_raw)
 		{
+			echo("<div class=\"col-sm-2\"></div>");
 			echo("</div>");
 			echo("</div>");
 			echo("</div>");
