@@ -63,7 +63,7 @@ class Paste extends Base
 		$this->expiration_epoch = $this->expirationToTimeStamp($post['expiration']);
 		$this->autodestroy = isset($post['paste_autodestroy']);
 		$this->syntax_highlighting = $post['paste_language'];
-		$this->content = htmlspecialchars($post['paste_content']);
+		$this->content = $post['paste_content'];
 		$this->access = $post['paste_access'];
 		$this->views = 0;
 		$this->deleted = false;

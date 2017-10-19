@@ -4,7 +4,6 @@ class Page Extends Base
 {
 	private $title = "";
 	private $output_raw = false;
-	private $page_tag = null;
 	private $page_path = null;
 
 	public function display()
@@ -20,6 +19,7 @@ class Page Extends Base
 			echo("<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />");
 			echo("<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/external/bootstrap/css/bootstrap.min.css\" />");
 			echo("<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/external/bootstrap-select/css/bootstrap-select.css\" />");
+			echo("<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/external/geshicss/css/dawn.css\" />");
 			echo("<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/css/main.css\" />");
 			echo("<title>$headerTitle</title>");
 			echo("</head>");
@@ -30,6 +30,8 @@ class Page Extends Base
 			echo("<div class=\"col-sm-10\">");
 			echo("<div class=\"container-fluid\">");
 		}
+		else
+			header("Content-Type: text/plain");
 
 		show_page();
 
@@ -56,6 +58,8 @@ class Page Extends Base
 		switch ($page)
 		{
 		case 'paste':
+		case null:
+			$this->title = 'View Paste';
 			$this->page_path = 'pages/paste.php';
 			break;
 		case 'view':

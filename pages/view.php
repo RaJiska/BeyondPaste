@@ -4,12 +4,24 @@ function show_page()
 {
 	global $Paste;
 	$paste_data = array();
+	$paste_content = null;
 
-	pasteView($Paste, $paste_data);
-	pasteViewDesign($paste_data);
+	if (pasteView($Paste, $paste_data))
+		$paste_content = $Paste->geshiParse();
+	else
+		$paste_content = $Paste->getErrorStr();
+
+	?>
+	
+	<script>
+		var raw_link = '<?php echo "?page=raw" . (($paste_data['id'] != null) ? "&pid=" . $paste_data['id'] : ""); ?>';
+	</script>
+
+	<?php
+	pasteViewDesign($paste_data, $paste_content);
 }
 
-function pasteViewDesign(&$paste_data)
+function pasteViewDesign(&$paste_data, &$paste_content)
 {
 	?>
 	<div class="mt-3">
@@ -21,7 +33,7 @@ function pasteViewDesign(&$paste_data)
 			<div class="col-5"></div>
 
 			<div class="col-2 pr-2">
-				<button type="button" class="btn btn-secondary btn-block" onclick="window.location='?page=view&raw'">
+				<button type="button" class="btn btn-secondary btn-block" onclick="window.location=raw_link">
 					<span class="pr-1">
 						<img src="resources/external/octicons/img/grabber.svg" width=16 height=32 onerror="this.src='lib/octicons/grabber.png'">
 					</span>
@@ -42,13 +54,18 @@ function pasteViewDesign(&$paste_data)
 
 	<hr>
 
-	<div id="paste_geshi"></div>
+	<div id="geshicode">
+		<?php
+		echo $paste_content;
+		?>
+	</div>
 	<?php
 }
 
 function pasteView(&$Paste, &$paste_data)
 {
-	if (!isset($_GET['pid']) || !$Paste->loadFromId($_GET['pid']) || !($paste_data['geshi_parsed'] = $Paste->geshiParse()))
+	$paste_data['id'] = (isset($_GET['pid'])) ? $_GET['pid'] : null;
+	if (!$Paste->loadFromId($paste_data['id']) || !($paste_data['geshi_parsed'] = $Paste->geshiParse()))
 	{
 		$paste_data['title'] = "Oops... :(";
 		return false;
