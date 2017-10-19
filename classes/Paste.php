@@ -115,7 +115,7 @@ class Paste extends Base
 		$this->title = (isset($post['paste_title']) && !empty($post['paste_title'])) ? htmlspecialchars($post['paste_title']) : "Without Title";
 		$this->owner_ip = $_SERVER['REMOTE_ADDR'];
 		$this->creation_epoch = time();
-		$this->expiration_epoch = $this->expirationToTimeStamp($post['expiration']);
+		$this->expiration_epoch = $this->expirationToTimeStamp($post['paste_expiration']);
 		$this->autodestroy = isset($post['paste_autodestroy']);
 		$this->syntax_highlighting = $post['paste_language'];
 		$this->content = $post['paste_content'];
