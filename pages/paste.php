@@ -7,7 +7,7 @@ function show_page()
 	pastePublish($Paste);
 
 	?>
-	<form action="?page=paste" method="POST">
+	<form action="?page=paste" method="POST" onsubmit="return paste_form_isvalid()" >
 		<div class="mt-3">
 			<h2>New Paste</h2>
 			<hr>
@@ -313,9 +313,10 @@ function show_page()
 
 		<div class="row">
 			<div class="col-sm-12">
-				<div class="form-group">
-    				<textarea name="paste_content" class="form-control" rows="15"></textarea>
-				  </div>
+				<div class="form-group" id="paste_content_formid">
+					<label class="form-control-label" for="paste_contentid" id="paste_content_errorid" hidden></label>
+    				<textarea id="paste_contentid" name="paste_content" class="form-control" rows="15"></textarea>
+				</div>
 			</div>
 		</div>
 

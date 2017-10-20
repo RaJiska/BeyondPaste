@@ -46,6 +46,7 @@ class Page Extends Base
 			echo("<script src=\"https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js\"></script>");
 			echo("<script src=\"resources/external/bootstrap/js/bootstrap.min.js\"></script>");
 			echo("<script src=\"resources/external/bootstrap-select/js/bootstrap-select.min.js\"></script>");
+			echo("<script src=\"resources/js/beyondpaste.js\"></script>");
 			echo("<script type=\"text/javascript\">");
 			echo('$(\'.selectpicker\').selectpicker({ });');
 			echo("</script>");
