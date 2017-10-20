@@ -26,17 +26,22 @@ class Database extends PDO
 		}
 	}
 
-	public function executeTransaction($queries, $binds)
+	public function executeTransaction($queries, $binds, $ret_lastid = false)
 	{
+		$return = true;
+
 		try
 		{
 			$this->beginTransaction();
 
 			foreach($queries as $key => $query)
 			{
-				echo $queries[$key];
+				$stmt = $this->prepare($queries[$key]);
+				$stmt->execute($binds[$key]);
 			}
 
+			if ($ret_lastid)
+				$return = $this->lastInsertId();
 			$this->commit();
 		}
 		catch (PDOException $e)
@@ -45,6 +50,8 @@ class Database extends PDO
 			$this->logError($e);
 			throw $e;
 		}
+
+		return $return;
 	}
 
 	private function logError($exception)

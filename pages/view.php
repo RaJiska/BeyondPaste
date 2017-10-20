@@ -5,11 +5,12 @@ function show_page()
 	global $Paste;
 	$paste_data = array();
 	$paste_content = null;
+	$error_str = null;
 
-	if (pasteView($Paste, $paste_data))
+	if (pasteView($Paste, $paste_data, $error_str))
 		$paste_content = $Paste->geshiParse();
 	else
-		$paste_content = $Paste->getErrorStr();
+		$paste_content = $error_str;
 
 	?>
 
@@ -75,13 +76,22 @@ function pasteViewDesign(&$paste_data, &$paste_content)
 	<?php
 }
 
-function pasteView(&$Paste, &$paste_data)
+function pasteView(&$Paste, &$paste_data, &$error_str)
 {
 	$paste_data['id'] = (isset($_GET['pid'])) ? $_GET['pid'] : null;
 	$paste_data['destroy'] = false;
+
+	$paste_data['title'] = "Oops... :(";
 	if (!$Paste->loadFromId($paste_data['id']) || !($paste_data['geshi_parsed'] = $Paste->geshiParse()))
 	{
-		$paste_data['title'] = "Oops... :(";
+		
+		$error_str = $Paste->getErrorStr();
+		return false;
+	}
+
+	if (!$Paste->getAccess()->isAllowed())
+	{
+		$error_str = $Paste->getAccess()->getErrorStr();
 		return false;
 	}
 

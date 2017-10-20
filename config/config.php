@@ -1,5 +1,7 @@
 <?php
 
+require_once "internal_config.php";
+
 /* Name of the website */
 $config['website'] = "BeyondPaste";
 

@@ -20,7 +20,7 @@ function show_page()
 		{
 			?>
 			<script>
-				window.location.href = "?page=view&pid=<?php echo $Paste->getId(); ?>"; 
+				window.location.href = "?page=view" + <?php echo json_encode($Paste->getPasteLink()); ?>; 
 			</script>
 			<?php
 		}
@@ -352,10 +352,18 @@ function show_page()
 
 			<div class="form-check">
 				<label class="form-check-label">
-					<input class="form-check-input" type="radio" name="paste_access" value="accessfree" checked>
+					<input class="form-check-input" type="radio" name="paste_access" value=0 checked>
 						Free
 					</input>
 					<span class="badge badge-default">Default</span>
+				</label>
+
+				<br>
+
+				<label class="form-check-label">
+					<input class="form-check-input" type="radio" name="paste_access" value=1>
+						Unlisted
+					</input>
 				</label>
 			</div>
 		</div>

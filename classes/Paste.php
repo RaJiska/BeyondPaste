@@ -10,7 +10,7 @@ class Paste extends Base
 	private $autodestroy = null;
 	private $syntax_highlighting = null;
 	private $content = null;
-	private $access = null;
+	private $Access = null;
 	private $views = null;
 	private $deleted = null;
 
@@ -21,28 +21,38 @@ class Paste extends Base
 	{
 		try
 		{
-			$stmt = $this->Database->prepare("INSERT INTO `paste` (title, owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id, views, deleted) VALUES (?, INET_ATON(?), ?, ?, ?, ?, ?, ?, ?, ?);");
-			$stmt->execute(array(
-				$this->title,
-				$this->owner_ip,
-				$this->creation_epoch,
-				$this->expiration_epoch,
-				$this->autodestroy,
-				$this->syntax_highlighting,
-				$this->content,
-				$this->access,
-				$this->views,
-				$this->deleted
+			$queries = array(
+				"INSERT INTO `access` (type, parameter) VALUES (?, ?);",
+				"INSERT INTO `paste` (title, owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id, views, deleted) VALUES (?, INET_ATON(?), ?, ?, ?, ?, ?, LAST_INSERT_ID(), ?, ?);"
+			);
+			$binds = (array(
+				array(
+					$this->Access->getType(),
+					$this->Access->getParameter()
+				),
+				array(
+					$this->title,
+					$this->owner_ip,
+					$this->creation_epoch,
+					$this->expiration_epoch,
+					$this->autodestroy,
+					$this->syntax_highlighting,
+					$this->content,
+					$this->views,
+					$this->deleted
+				)
 			));
+
+			$this->id = $this->Database->executeTransaction($queries, $binds, true);
 		}
 		catch (PDOException $e)
 		{
+			echo $e->getMessage();
 			$this->setErrorStr("Paste Publish: SQL Request Failed");
 			return false;
 		}
 
 		$this->is_published = true;
-		$this->id = $this->Database->lastInsertId();
 		return true;
 	}
 
@@ -53,7 +63,7 @@ class Paste extends Base
 
 		try
 		{
-			$stmt = $this->Database->prepare("UPDATE `paste` SET title = ?, owner_ip = INET_ATON(?), creation_epoch = ?, expiration_epoch = ?, autodestroy = ?, syntax_highlighting = ?, content = ?, access_id = ?, views = ?, deleted = ? WHERE id = ?;");
+			$stmt = $this->Database->prepare("UPDATE `paste` SET title = ?, owner_ip = INET_ATON(?), creation_epoch = ?, expiration_epoch = ?, autodestroy = ?, syntax_highlighting = ?, content = ?, views = ?, deleted = ? WHERE id = ?;");
 			$stmt->execute(array(
 				$this->title,
 				$this->owner_ip,
@@ -62,7 +72,6 @@ class Paste extends Base
 				$this->autodestroy,
 				$this->syntax_highlighting,
 				$this->content,
-				$this->access,
 				$this->views,
 				$this->deleted,
 				$this->id
@@ -121,12 +130,12 @@ class Paste extends Base
 		$this->autodestroy = isset($post['paste_autodestroy']);
 		$this->syntax_highlighting = $post['paste_language'];
 		$this->content = $post['paste_content'];
-		$this->access = $post['paste_access'];
 		$this->views = 0;
 		$this->deleted = false;
 
 		$this->is_loaded = true;
 		$this->is_published = false;
+		$this->Access = new Access($post['paste_access']);
 	}
 
 	public function isPostValid(&$post)
@@ -166,7 +175,7 @@ class Paste extends Base
 			$this->setErrorStr("Couldn't set syntax highlighting");
 			return false;
 		}
-		if (!isset($post['paste_access']) || ($post['paste_access'] != "accessfree" && $post['paste_access'] != "accesspass" && $post['paste_access'] != "accessip"))
+		if (!isset($post['paste_access']) || ($post['paste_access'] != ACCESS_FREE && $post['paste_access'] != ACCESS_UNLISTED))
 		{
 			$this->setErrorStr("Couldn't retrieve valid access data in the posted form");
 			return false;
@@ -191,7 +200,7 @@ class Paste extends Base
 
 		try
 		{
-			$stmt = $this->Database->prepare("SELECT id, title, INET_NTOA(owner_ip) AS owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id, views, deleted FROM paste WHERE id = ? AND deleted = '0' LIMIT 1;");
+			$stmt = $this->Database->prepare("SELECT paste.id, title, INET_NTOA(owner_ip) AS owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, views, deleted, access.type AS access_type, access.parameter AS access_parameter FROM paste LEFT JOIN access ON paste.access_id = access.id WHERE paste.id = ? AND deleted = '0' LIMIT 1;");
 			$stmt->execute(array($id));
 			if (!($row = $stmt->fetch()))
 				throw new PDOException();
@@ -210,12 +219,12 @@ class Paste extends Base
 		$this->autodestroy = $row['autodestroy'];
 		$this->syntax_highlighting = $row['syntax_highlighting'];
 		$this->content = $row['content'];
-		$this->access = $row['access_id'];
 		$this->views = $row['views'];
 		$this->deleted = $row['deleted'];
 
 		$this->is_loaded = true;
 		$this->is_published = true;
+		$this->Access = new Access($row['access_type'], $row['access_parameter']);
 
 		return true;
 	}
@@ -236,6 +245,13 @@ class Paste extends Base
 
 		$this->is_loaded = false;
 		$this->is_published = false;
+	}
+
+	public function getPasteLink()
+	{
+		if (!$this->is_loaded)
+			return "";
+		return ("&pid=" . $this->id . $this->Access->paramToLink());
 	}
 
 	private function expirationToTimestamp(&$expiration)
@@ -314,7 +330,7 @@ class Paste extends Base
 
 	public function getAccess()
 	{
-		return $this->access;
+		return $this->Access;
 	}
 
 	public function getViews()
