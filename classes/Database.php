@@ -2,7 +2,9 @@
 
 class Database extends Base
 {
+	private $sqlres;
 	private $echo_errors;
+	private $stmt;
 
 	public function connect($echo_errors = false)
 	{
@@ -30,6 +32,38 @@ class Database extends Base
 	{
 		return ($this->sqlres != null);
 	}
+
+	public function query($query, $bind)
+	{
+		try
+		{
+			$this->stmt = $this->sqlres->prepare($query);
+			$this->stmt->execute($bind);
+		}
+		catch (PDOException $e)
+		{
+			$this->setErrorStr($e->getMessage());
+			return false;
+		}
+		return true;
+	}
+
+	public function transaction()
+	{
+
+	}
+
+	public function fetch()
+	{
+		return ($this->stmt->fetch());
+	}
+
+	public function fetchAll()
+	{
+		return ($this->stmt->fetchAll());
+	}
+
+	/* Setters / Getters */
 
 	public function setEchoErrors($echo_errors)
 	{

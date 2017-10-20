@@ -19,23 +19,21 @@ class Paste extends Base
 
 	public function publish()
 	{
-		try
-		{
-			$stmt = $this->sqlres->prepare("INSERT INTO `paste` (title, owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id, views, deleted) VALUES (:title, INET_ATON(:owner_ip), :creation_epoch, :expiration_epoch, :autodestroy, :syntax_highlighting, :content, :access_id, :views, :deleted);");
-			$stmt->execute(array(
-				':title' => $this->title,
-				':owner_ip' => $this->owner_ip,
-				':creation_epoch' => $this->creation_epoch,
-				':expiration_epoch' => $this->expiration_epoch,
-				':autodestroy' => $this->autodestroy,
-				':syntax_highlighting' => $this->syntax_highlighting,
-				':content' => $this->content,
-				':access_id' => $this->access,
-				':views' => $this->views,
-				':deleted' => $this->deleted
-			));
-		}
-		catch (PDOException $e)
+		$query = "INSERT INTO `paste` (title, owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id, views, deleted) VALUES (?, INET_ATON(?), ?, ?, ?, ?, ?, ?, ?, ?);";
+		$bind = array(
+			$this->title,
+			$this->owner_ip,
+			$this->creation_epoch,
+			$this->expiration_epoch,
+			$this->autodestroy,
+			$this->syntax_highlighting,
+			$this->content,
+			$this->access,
+			$this->views,
+			$this->deleted
+		);
+		
+		if (!$this->Database->query($query, $bind))
 		{
 			$this->setErrorStr("Paste Publish: SQL Request Failed");
 			return false;
@@ -50,24 +48,23 @@ class Paste extends Base
 	{
 		if (!$this->is_published)
 			return false;
-		try
-		{
-			$stmt = $this->sqlres->prepare("UPDATE `paste` SET title = :title, owner_ip = INET_ATON(:owner_ip), creation_epoch = :creation_epoch, expiration_epoch = :expiration_epoch, autodestroy = :autodestroy, syntax_highlighting = :syntax_highlighting, content = :content, access_id = :access_id, views = :views, deleted = :deleted WHERE id = :id;");
-			$stmt->execute(array(
-				':title' => $this->title,
-				':owner_ip' => $this->owner_ip,
-				':creation_epoch' => $this->creation_epoch,
-				':expiration_epoch' => $this->expiration_epoch,
-				':autodestroy' => $this->autodestroy,
-				':syntax_highlighting' => $this->syntax_highlighting,
-				':content' => $this->content,
-				':access_id' => $this->access,
-				':views' => $this->views,
-				':deleted' => $this->deleted,
-				':id' => $this->id
-			));
-		}
-		catch (PDOException $e)
+
+		$query = "UPDATE `paste` SET title = ?, owner_ip = INET_ATON(?), creation_epoch = ?, expiration_epoch = ?, autodestroy = ?, syntax_highlighting = ?, content = ?, access_id = ?, views = ?, deleted = ? WHERE id = ?;";
+		$bind = array(
+			$this->title,
+			$this->owner_ip,
+			$this->creation_epoch,
+			$this->expiration_epoch,
+			$this->autodestroy,
+			$this->syntax_highlighting,
+			$this->content,
+			$this->access,
+			$this->views,
+			$this->deleted,
+			$this->id
+		);
+
+		if (!$this->Database->query($query, $bind))
 		{
 			$this->setErrorStr("Paste Update: SQL Request Failed");
 			return false;
@@ -80,12 +77,11 @@ class Paste extends Base
 	{
 		if (!$this->is_published)
 			return false;
-		try
-		{
-			$stmt = $this->sqlres->prepare("DELETE FROM `paste` WHERE id = :id;");
-			$stmt->execute(array(':id' => $this->id));
-		}
-		catch (PDOException $e)
+
+		$query = "DELETE FROM `paste` WHERE id = :id;";
+		$bind(array($this->id));
+
+		if (!$this->Database->query($query, $bind))
 		{
 			$this->setErrorStr("Paste Delete: SQL Request Failed");
 			return false;
@@ -186,14 +182,11 @@ class Paste extends Base
 			$this->setErrorStr("Paste ID must be a positive number");
 			return false;
 		}
-		try
-		{
-			$stmt = $this->sqlres->prepare("SELECT id, title, INET_NTOA(owner_ip) AS owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id, views, deleted FROM paste WHERE id = :id AND deleted = '0' LIMIT 1;");
-			$stmt->execute(array(":id" => $id));
-			if (!($row = $stmt->fetch()))
-				throw new Exception();
-		}
-		catch (Exception $e)
+
+		$query = "SELECT id, title, INET_NTOA(owner_ip) AS owner_ip, creation_epoch, expiration_epoch, autodestroy, syntax_highlighting, content, access_id, views, deleted FROM paste WHERE id = ? AND deleted = '0' LIMIT 1;";
+		$bind = array($id);
+
+		if (!$this->Database->query($query, $bind) || !($row = $this->Database->fetch()))
 		{
 			$this->setErrorStr("Could not retrieve given paste");
 			return false;
@@ -337,4 +330,4 @@ class Paste extends Base
 
 $Paste = new Paste();
 $Paste->setConfig($config);
-$Paste->setSqlres($Database->getSqlres());
+$Paste->setDatabase($Database);

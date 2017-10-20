@@ -3,8 +3,8 @@
 class Base
 {
 	protected $config;
-	protected $sqlres;
 	protected $error_str;
+	protected $Database;
 
 	public function setConfig($config)
 	{
@@ -16,14 +16,14 @@ class Base
 		return $this->config;
 	}
 
-	public function setSqlres($sqlres)
+	public function setDatabase($Database)
 	{
-		$this->sqlres = $sqlres;
+		$this->Database = $Database;
 	}
 
-	public function getSqlres()
+	public function getDatabase()
 	{
-		return $this->sqlres;
+		return $this->Database;
 	}
 
 	protected function setErrorStr($error_str)

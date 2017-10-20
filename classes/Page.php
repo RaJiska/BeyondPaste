@@ -61,7 +61,7 @@ class Page Extends Base
 		{
 		case 'paste':
 		case null:
-			$this->title = 'View Paste';
+			$this->title = '';
 			$this->page_path = 'pages/paste.php';
 			break;
 		case 'view':
