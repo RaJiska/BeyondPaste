@@ -1,4 +1,4 @@
-function paste_form_isvalid()
+function paste_formIsValid()
 {
 	var paste_content_length = document.getElementById("paste_contentid").value.length;
 	var error_str = null;
@@ -17,4 +17,14 @@ function paste_form_isvalid()
 		return false;
 	}
 	return true;
+}
+
+function paste_publishDisplayAlert(alert_type, error_str)
+{
+	var alert = document.getElementById("paste_alertid");
+	var error_prefix;
+
+	alert.className += " " + alert_type;
+	alert.innerHTML = "<span class=\"lead\">Ouch !</span><br>An error occured while publishing your paste:<br>&emsp;<strong>" + error_str + "</strong>";
+	alert.removeAttribute("hidden");
 }

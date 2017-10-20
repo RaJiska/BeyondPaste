@@ -4,15 +4,36 @@ function show_page()
 {
 	global $Paste;
 
-	pastePublish($Paste);
+	if ($Paste->isPosted($_POST))
+	{
+		if (!pastePublish($Paste))
+		{
+			?>
+			<script>
+				window.onload = function() {
+					paste_publishDisplayAlert("alert-danger", <?php echo json_encode($Paste->getErrorStr(), JSON_HEX_TAG); ?>);
+				};
+			</script>
+			<?php
+		}
+		else
+		{
+			?>
+			<script>
+				window.location.href = "?page=view&pid=<?php echo $Paste->getId(); ?>"; 
+			</script>
+			<?php
+		}
+	}
 
 	?>
-	<form action="?page=paste" method="POST" onsubmit="return paste_form_isvalid()" >
+	<form action="?page=paste" method="POST" onsubmit="return paste_formIsValid()" >
 		<div class="mt-3">
 			<h2>New Paste</h2>
 			<hr>
 		</div>
 
+		<div id="paste_alertid" class="alert" role="alert" hidden></div>
 		<input type="hidden" name="paste_post"></input>
 
 		<div class="row">
@@ -44,7 +65,10 @@ function show_page()
 			<div class="col-sm-3">
 				<div class="form-check pt-4">
 					<label class="form-check-label">
-						<input type="checkbox" id="paste_autodestroy" name="paste_autodestroy"> Automatically destroy after reading</input>
+						<input type="checkbox" id="paste_autodestroy" name="paste_autodestroy"> 
+							<img src="resources/external/octicons/img/eye.svg" width=16 height=32 onerror="this.src='lib/octicons/eye.png'">
+							Automatically destroy after reading
+						</input>
 					</label>
 				</div>
 			</div>
@@ -346,11 +370,10 @@ function show_page()
 
 function pastePublish(&$Paste)
 {
-	if (!$Paste->isPosted($_POST))
-		return;
 	if (!$Paste->isPostValid($_POST))
-		return;
+		return false;
 	$Paste->loadFromPost($_POST);
 	if (!$Paste->publish())
-		return;
+		return false;
+	return true;
 }

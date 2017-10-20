@@ -135,38 +135,38 @@ class Paste extends Base
 			$post['paste_expiration'] != "1m" && $post['paste_expiration'] != "6m" && 
 			$post['paste_expiration'] != "1y" && $post['paste_expiration'] != "never"))
 		{
-			$this->setErrorStr("Expiration: Couldn't retrieve valid data in the posted form");
+			$this->setErrorStr("Couldn't retrieve valid expiration data in the posted form");
 			return false;
 		}
 		if (isset($post['paste_title']) && strlen($post['paste_title']) > 50)
 		{
-			$this->setErrorStr("Paste Title: String is too long, 50 characters maximum");
+			$this->setErrorStr("The title is too long, 50 characters maximum");
 			return false;
 		}
 		if (!isset($post['paste_content']) || empty($post['paste_content']))
 		{
-			$this->setErrorStr("Paste Content: The content of the paste musn't be empty");
+			$this->setErrorStr("The content of the paste musn't be empty");
 			return false;
 		}
 		if (strlen($post['paste_content']) > 65000)
 		{
-			$this->setErrorStr("Paste Content: The paste is too large");
+			$this->setErrorStr("The paste is too large");
 			return false;
 		}
 		if (!isset($post['paste_language']))
 		{
-			$this->setErrorStr("Syntax Highlighting: Couldn't retrieve language data");
+			$this->setErrorStr("Couldn't retrieve syntax highlighting data");
 			return false;
 		}
 		$Geshi = new Geshi("Hello World", $post['paste_language']);
 		if ($Geshi->error())
 		{
-			$this->setErrorStr("Syntax Highlighting: Couldn't set syntax highlighting");
+			$this->setErrorStr("Couldn't set syntax highlighting");
 			return false;
 		}
 		if (!isset($post['paste_access']) || ($post['paste_access'] != "accessfree" && $post['paste_access'] != "accesspass" && $post['paste_access'] != "accessip"))
 		{
-			$this->setErrorStr("Access: Couldn't retrieve valid data in the posted form");
+			$this->setErrorStr("Couldn't retrieve valid access data in the posted form");
 			return false;
 		}
 		return true;
