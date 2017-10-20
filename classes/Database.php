@@ -1,20 +1,18 @@
 <?php
 
-class Database extends Base
+class Database extends PDO
 {
-	private $sqlres;
 	private $echo_errors;
-	private $stmt;
 
-	public function connect($echo_errors = false)
+	public function __construct($config, $echo_errors = false)
 	{
 		$this->echo_errors = $echo_errors;
 
 		try
 		{
-			$this->sqlres = new PDO(
-				'mysql:host=' . $this->config['db']['host'] . ';dbname=' . $this->config['db']['name'],
-				$this->config['db']['username'], $this->config['db']['password'],
+			parent::__construct(
+				'mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'],
+				$config['db']['username'], $config['db']['password'],
 				array(
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 					PDO::ATTR_PERSISTENT => true
@@ -24,43 +22,35 @@ class Database extends Base
 		catch (PDOException $e)
 		{
 			$this->logError($e);
-			$this->sqlres = null;
+			throw $e;
 		}
 	}
 
-	public function isConnected()
-	{
-		return ($this->sqlres != null);
-	}
-
-	public function query($query, $bind)
+	public function executeTransaction($queries, $binds)
 	{
 		try
 		{
-			$this->stmt = $this->sqlres->prepare($query);
-			$this->stmt->execute($bind);
+			$this->beginTransaction();
+
+			foreach($queries as $key => $query)
+			{
+				echo $queries[$key];
+			}
+
+			$this->commit();
 		}
 		catch (PDOException $e)
 		{
-			$this->setErrorStr($e->getMessage());
-			return false;
+			$this->rollBack();
+			$this->logError($e);
+			throw $e;
 		}
-		return true;
 	}
 
-	public function transaction()
+	private function logError($exception)
 	{
-
-	}
-
-	public function fetch()
-	{
-		return ($this->stmt->fetch());
-	}
-
-	public function fetchAll()
-	{
-		return ($this->stmt->fetchAll());
+		if ($this->echo_errors)
+			echo('Database error: ' . htmlspecialchars($exception->getMessage()));
 	}
 
 	/* Setters / Getters */
@@ -74,14 +64,15 @@ class Database extends Base
 	{
 		return $this->echo_errors;
 	}
-
-	private function logError($exception)
-	{
-		if ($this->echo_errors)
-			echo('Database error: ' . htmlspecialchars($exception->getMessage()));
-	}
 }
 
-$Database = new Database();
-$Database->setConfig($config);
-$Database->connect();
+$Database = null;
+
+try
+{
+	$Database = new Database($config);
+}
+catch (PDOException $e)
+{
+	die("Could not connect to the database");
+}
