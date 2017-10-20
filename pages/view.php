@@ -12,6 +12,8 @@ function show_page()
 	else
 		$paste_content = $error_str;
 
+	$Paste->delete();
+
 	?>
 
 	<script>

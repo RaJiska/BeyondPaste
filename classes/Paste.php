@@ -93,11 +93,22 @@ class Paste extends Base
 
 		try
 		{
-			$stmt = $this->Database->prepare("DELETE FROM `paste` WHERE id = :id;");
-			$stmt->execute(array($this->id));
+			$queries = array(
+				"DELETE FROM `access` WHERE id = (SELECT access_id FROM `paste` WHERE id = ?);",
+				"DELETE FROM `paste` WHERE id = ?"
+			);
+			$binds = array(
+				array($this->id),
+				array($this->id)
+			);
+
+			$this->Database->executeTransaction($queries, $binds);
+			//$stmt = $this->Database->prepare("DELETE FROM `paste` WHERE id = :id;");
+			//$stmt->execute(array($this->id));
 		}
 		catch (PDOException $e)
 		{
+			echo "Error: " . $e->getMessage();
 			$this->setErrorStr("Paste Delete: SQL Request Failed");
 			return false;
 		}
