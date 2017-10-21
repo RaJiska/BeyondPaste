@@ -63,8 +63,11 @@ class Database extends PDO
 			echo('Database error: ' . htmlspecialchars($e->getMessage()));
 		if (!$this->log_fd)
 		{
-			if (!($this->log_fd = fopen("log/" . $config['db']['logfile'], 'a')))
+			$exists = (file_exists("log/" . $this->config['db']['logfile']));
+			if (!($this->log_fd = fopen("log/" . $this->config['db']['logfile'], 'a')))
 				return false;
+			if (!$exists)
+				chmod("log/" . $this->config['db']['logfile'], 0640);
 		}
 		return (fwrite($this->log_fd, "[" . $type . "] - " . date('m/d/Y h:i:s a', time()) . " - " . $e->getMessage()));
 	}
