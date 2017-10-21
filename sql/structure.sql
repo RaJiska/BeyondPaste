@@ -8,7 +8,7 @@ CREATE TABLE access (
 CREATE TABLE paste ( 
     id INT(6) UNSIGNED NOT NULL AUTO_INCREMENT,
     owner_ip INT UNSIGNED,
-    title VARCHAR(3),
+    title VARCHAR(50),
     creation_epoch INT(11) UNSIGNED,
     expiration_epoch INT(11) UNSIGNED,
     autodestroy TINYINT(1) NOT NULL DEFAULT 0,

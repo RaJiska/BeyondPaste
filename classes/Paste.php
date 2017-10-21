@@ -103,12 +103,9 @@ class Paste extends Base
 			);
 
 			$this->Database->executeTransaction($queries, $binds);
-			//$stmt = $this->Database->prepare("DELETE FROM `paste` WHERE id = :id;");
-			//$stmt->execute(array($this->id));
 		}
 		catch (PDOException $e)
 		{
-			echo "Error: " . $e->getMessage();
 			$this->setErrorStr("Paste Delete: SQL Request Failed");
 			return false;
 		}
@@ -273,7 +270,7 @@ class Paste extends Base
 		{
 		case '1h':
 			$timeToAdd = (60 * 60);
-			breal;
+			break;
 		case '1d':
 			$timeToAdd = (24 * 60 * 60);
 			break;

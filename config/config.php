@@ -10,3 +10,4 @@ $config['db']['host'] = "localhost";
 $config['db']['name'] = "beyondpaste";
 $config['db']['username'] = 'beyondpaste_user';
 $config['db']['password'] = 'passwd';
+$config['db']['logfile'] = 'database.txt';

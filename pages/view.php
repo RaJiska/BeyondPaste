@@ -12,8 +12,6 @@ function show_page()
 	else
 		$paste_content = $error_str;
 
-	$Paste->delete();
-
 	?>
 
 	<script>
@@ -94,15 +92,16 @@ function pasteView(&$Paste, &$paste_data, &$error_str)
 	if (!$Paste->getAccess()->isAllowed())
 	{
 		$error_str = $Paste->getAccess()->getErrorStr();
+		$Paste->discard();
 		return false;
 	}
 
+	$paste_data['destroy'] = $Paste->getAutodestroy();
 	$paste_data['title'] = $Paste->getTitle() . " - #" . $Paste->getId();
-	if ($Paste->getAutodestroy() && (
+	if ($paste_data['destroy'] && (
 		($_SERVER['REMOTE_ADDR'] == $Paste->getOwnerIp() && (time() >= $Paste->getCreationEpoch() + 15)) ||
 		$_SERVER['REMOTE_ADDR'] != $Paste->getOwnerIp()))
 	{
-		$paste_data['destroy'] = true;
 		$Paste->setDeleted(true);
 		$Paste->update();
 	}
