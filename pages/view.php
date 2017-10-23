@@ -97,7 +97,7 @@ function pasteView(&$Paste, &$paste_data, &$error_str)
 	}
 
 	$paste_data['destroy'] = $Paste->getAutodestroy();
-	$paste_data['title'] = $Paste->getTitle() . " - #" . $Paste->getId();
+	$paste_data['title'] = htmlspecialchars($Paste->getTitle()) . " - #" . $Paste->getId();
 	if ($paste_data['destroy'] && (
 		($_SERVER['REMOTE_ADDR'] == $Paste->getOwnerIp() && (time() >= $Paste->getCreationEpoch() + 15)) ||
 		$_SERVER['REMOTE_ADDR'] != $Paste->getOwnerIp()))

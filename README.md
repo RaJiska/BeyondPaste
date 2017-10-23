@@ -10,10 +10,10 @@ Running on PHP7, it is using Bootstrap 4 for its frontend, Geshi for the syntax 
 * Paste auto remove
 
 # Screenshots
-**Paste creation**
+### **Paste creation**
 ![alt text](https://i.gyazo.com/c6270e7c1068d4bbb463e10c2940a382.png)  
 ---------------------
-**Paste View**
+### **Paste View**
 ![alt text](https://i.gyazo.com/abedef0e0aca81f07894fd0e7802fec0.png)
 
 # Credits

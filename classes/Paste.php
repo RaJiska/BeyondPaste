@@ -95,7 +95,7 @@ class Paste extends Base
 		{
 			$queries = array(
 				"DELETE FROM `access` WHERE id = (SELECT access_id FROM `paste` WHERE id = ?);",
-				"DELETE FROM `paste` WHERE id = ?"
+				"DELETE FROM `paste` WHERE id = ?;"
 			);
 			$binds = array(
 				array($this->id),
@@ -131,7 +131,7 @@ class Paste extends Base
 
 	public function loadFromPost(&$post)
 	{
-		$this->title = (isset($post['paste_title']) && !empty($post['paste_title'])) ? htmlspecialchars($post['paste_title']) : "Without Title";
+		$this->title = (isset($post['paste_title']) && !empty($post['paste_title'])) ? $post['paste_title'] : "Without Title";
 		$this->owner_ip = $_SERVER['REMOTE_ADDR'];
 		$this->creation_epoch = time();
 		$this->expiration_epoch = $this->expirationToTimeStamp($post['paste_expiration']);
