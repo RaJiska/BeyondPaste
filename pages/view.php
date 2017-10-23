@@ -4,26 +4,26 @@ function show_page()
 {
 	global $Paste;
 	$paste_data = array();
-	$paste_content = null;
 	$error_str = null;
 
 	if (pasteView($Paste, $paste_data, $error_str))
-		$paste_content = $Paste->geshiParse();
+		$paste_data['content'] = $Paste->geshiParse();
 	else
-		$paste_content = $error_str;
+		$paste_data['content'] = $error_str;
+
+	$url_pid = ((isset($_GET['pid'])) ? "&pid=" . $_GET['pid'] : "");
+	$url_token = ((isset($_GET['token'])) ? "&token=" . $_GET['token'] : "");
 
 	?>
-
 	<script>
-		var raw_link = '<?php echo "?page=raw" . (($paste_data['id'] != null) ? "&pid=" . $paste_data['id'] : ""); ?>';
+		var raw_link = '<?php echo "?page=raw" . $url_pid . $url_token; ?>';
 	</script>
-
 	<?php
 
-	pasteViewDesign($paste_data, $paste_content);
+	pasteViewDesign($paste_data);
 }
 
-function pasteViewDesign(&$paste_data, &$paste_content)
+function pasteViewDesign(&$paste_data)
 {
 	?>
 	<div class="mt-3">
@@ -70,7 +70,7 @@ function pasteViewDesign(&$paste_data, &$paste_content)
 
 	<div id="geshicode">
 		<?php
-		echo $paste_content;
+		echo $paste_data['content'];
 		?>
 	</div>
 	<?php
