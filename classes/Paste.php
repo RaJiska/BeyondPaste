@@ -264,6 +264,7 @@ class Paste extends Base
 
 	private function expirationToTimestamp(&$expiration)
 	{
+		$time = time();
 		$timeToAdd = 0;
 
 		switch ($expiration)
@@ -289,9 +290,11 @@ class Paste extends Base
 		case '1y':
 			$timeToAdd = (12 * 30 * 24 * 60 * 60);
 			break;
+		case 'never':
+			$timeToAdd = -($time);
 		}
 		
-		return (time() + $timeToAdd);
+		return ($time + $timeToAdd);
 	}
 
 	/* Getters / Setters */

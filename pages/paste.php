@@ -40,7 +40,7 @@ function show_page()
 			<div class="col-sm-5">
 				<label for="paste_title">Title</label>
 				<div class="input-group">
-					<input type="text" class="form-control" id="paste_title" name="paste_title" placeholder="Title" maxlength="50">
+					<input type="text" class="form-control" id="paste_title" name="paste_title" placeholder="Title" maxlength="50" autocomplete="off">
 				</div>
 			</div>
 		</div>
@@ -339,7 +339,7 @@ function show_page()
 			<div class="col-sm-12">
 				<div class="form-group" id="paste_content_formid">
 					<label class="form-control-label" for="paste_contentid" id="paste_content_errorid" hidden></label>
-    				<textarea id="paste_contentid" name="paste_content" class="form-control" rows="15"></textarea>
+    				<textarea id="paste_contentid" name="paste_content" class="form-control" maxlength="65000" rows="15"></textarea>
 				</div>
 			</div>
 		</div>

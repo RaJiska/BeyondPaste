@@ -5,8 +5,6 @@ function paste_formIsValid()
 
 	if (paste_content_length <= 0)
 		error_str = "Paste content musn't be empty";
-	else if (paste_content_length > 65000)
-		error_str = "Paste too large, 65000 bytes at most";
 
 	if (error_str != null)
 	{
