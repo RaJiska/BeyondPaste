@@ -13,22 +13,24 @@ class Page Extends Base
 		if (!$this->output_raw)
 		{
 			$headerTitle = (!empty($this->title)) ? $this->config['website'] . " - " . $this->title : $this->config['website'];
-			echo("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
-			echo("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">");
-			echo("<head>");
-			echo("<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />");
-			echo("<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/external/bootstrap/css/bootstrap.min.css\" />");
-			echo("<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/external/bootstrap-select/css/bootstrap-select.css\" />");
-			echo("<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/external/geshicss/css/dawn.css\" />");
-			echo("<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/css/main.css\" />");
-			echo("<title>$headerTitle</title>");
-			echo("</head>");
-			echo("<body>");
-			echo("<div class=\"container-fluid\">");
-			echo("<div class=\"row\">");
-			echo("<div class=\"col-sm-2\"></div>");
-			echo("<div class=\"col-sm-8\">");
-			echo("<div class=\"container-fluid pt-4\">");
+			echo("
+				<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+				<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">
+				<head>
+				<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />
+				<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/external/bootstrap/css/bootstrap.min.css\" />
+				<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/external/bootstrap-select/css/bootstrap-select.css\" />
+				<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/external/geshicss/css/dawn.css\" />
+				<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/css/main.css\" />
+				<title>$headerTitle</title>
+				</head>
+				<body>
+				<div class=\"container-fluid\">
+				<div class=\"row\">
+				<div class=\"col-sm-2\"></div>
+				<div class=\"col-sm-8\">
+				<div class=\"container-fluid pt-4\">
+			");
 		}
 		else
 			header("Content-Type: text/plain");
@@ -37,21 +39,28 @@ class Page Extends Base
 
 		if (!$this->output_raw)
 		{
-			echo("<div class=\"col-sm-2\"></div>");
-			echo("</div>");
-			echo("</div>");
-			echo("</div>");
-			echo("</div>");
-			echo("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>");
-			echo("<script src=\"https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js\"></script>");
-			echo("<script src=\"resources/external/bootstrap/js/bootstrap.min.js\"></script>");
-			echo("<script src=\"resources/external/bootstrap-select/js/bootstrap-select.min.js\"></script>");
-			echo("<script src=\"resources/js/beyondpaste.js\"></script>");
-			echo("<script type=\"text/javascript\">");
-			echo('$(\'.selectpicker\').selectpicker({ });');
-			echo("</script>");
-			echo("</body>");
-			echo("</html>");
+			echo("
+				<div class=\"col-sm-2\"></div>
+				</div>
+				</div>
+				</div>
+				</div>
+
+				<div class=\"footer\">
+				<center>Powered by <a href=\"https://github.com/RaJiska/BeyondPaste\">BeyondPaste</a> <img src=\"resources/external/octicons/img/octoface.svg\" width=12 height=24 onerror=\"this.src='lib/octicons/eye.png'\">. Copyright Doriann \"Ra'Jiska\" Corlouër ©</center>
+				</div>
+
+				<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>
+				<script src=\"https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js\"></script>
+				<script src=\"resources/external/bootstrap/js/bootstrap.min.js\"></script>
+				<script src=\"resources/external/bootstrap-select/js/bootstrap-select.min.js\"></script>
+				<script src=\"resources/js/beyondpaste.js\"></script>
+				<script type=\"text/javascript\">
+				$(\'.selectpicker\').selectpicker({ });
+				</script>
+				</body>
+				</html>
+			");
 		}
 	}
 

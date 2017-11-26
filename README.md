@@ -1,6 +1,8 @@
 # BeyondPaste
 Simple self hosted Pastebin-like tool allowing you to have the pastes uploaded on your own server.  
-Running on PHP7, it is using Bootstrap 4 for its frontend, Geshi for the syntax highlighting.
+Running on PHP7, it is using Bootstrap 4 for its frontend, Geshi for the syntax highlighting.  
+  
+The footer can be entirely modified, but keep in mind authors should always be credited :).
 
 # Features
 * Paste upload
