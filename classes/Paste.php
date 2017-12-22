@@ -129,61 +129,64 @@ class Paste extends Base
 		return $Geshi->parse_code();
 	}
 
-	public function loadFromPost(&$post)
+	public function loadFromPost()
 	{
-		$this->title = (isset($post['paste_title']) && !empty($post['paste_title'])) ? $post['paste_title'] : "Without Title";
+		if (!isset($_POST))
+			return;
+		$this->title = (isset($_POST['paste_title']) && !empty($_POST['paste_title'])) ? $_POST['paste_title'] : "Without Title";
 		$this->owner_ip = $_SERVER['REMOTE_ADDR'];
 		$this->creation_epoch = time();
-		$this->expiration_epoch = $this->expirationToTimeStamp($post['paste_expiration']);
-		$this->autodestroy = isset($post['paste_autodestroy']);
-		$this->syntax_highlighting = $post['paste_language'];
-		$this->content = $post['paste_content'];
+		$this->expiration_epoch = $this->expirationToTimeStamp($_POST['paste_expiration']);
+		$this->autodestroy = isset($_POST['paste_autodestroy']);
+		$this->syntax_highlighting = $_POST['paste_language'];
+		$this->content = $_POST['paste_content'];
 		$this->views = 0;
 		$this->deleted = false;
 
 		$this->is_loaded = true;
 		$this->is_published = false;
-		$this->Access = new Access($post['paste_access']);
+		$this->Access = new Access($_POST['paste_access']);
 	}
 
-	public function isPostValid(&$post)
+	public function isPostValid()
 	{
-		if (!isset($post['paste_expiration']) || 
-			($post['paste_expiration'] != "1h" && $post['paste_expiration'] != "1d" &&
-			$post['paste_expiration'] != "1w" && $post['paste_expiration'] != "2w" && 
-			$post['paste_expiration'] != "1m" && $post['paste_expiration'] != "6m" && 
-			$post['paste_expiration'] != "1y" && $post['paste_expiration'] != "never"))
+		if (!isset($_POST, $_POST['paste_expiration']))
+			return false;
+		if (($_POST['paste_expiration'] != "1h" && $_POST['paste_expiration'] != "1d" &&
+			$_POST['paste_expiration'] != "1w" && $_POST['paste_expiration'] != "2w" && 
+			$_POST['paste_expiration'] != "1m" && $_POST['paste_expiration'] != "6m" && 
+			$_POST['paste_expiration'] != "1y" && $_POST['paste_expiration'] != "never"))
 		{
 			$this->setErrorStr("Couldn't retrieve valid expiration data in the posted form");
 			return false;
 		}
-		if (isset($post['paste_title']) && strlen($post['paste_title']) > 50)
+		if (isset($_POST['paste_title']) && strlen($_POST['paste_title']) > 50)
 		{
 			$this->setErrorStr("The title is too long, 50 characters maximum");
 			return false;
 		}
-		if (!isset($post['paste_content']) || empty($post['paste_content']))
+		if (!isset($_POST['paste_content']) || empty($_POST['paste_content']))
 		{
 			$this->setErrorStr("The content of the paste musn't be empty");
 			return false;
 		}
-		if (strlen($post['paste_content']) > 65000)
+		if (strlen($_POST['paste_content']) > 65000)
 		{
 			$this->setErrorStr("The paste is too large");
 			return false;
 		}
-		if (!isset($post['paste_language']))
+		if (!isset($_POST['paste_language']))
 		{
 			$this->setErrorStr("Couldn't retrieve syntax highlighting data");
 			return false;
 		}
-		$Geshi = new Geshi("Hello World", $post['paste_language']);
+		$Geshi = new Geshi("Hello World", $_POST['paste_language']);
 		if ($Geshi->error())
 		{
 			$this->setErrorStr("Couldn't set syntax highlighting");
 			return false;
 		}
-		if (!isset($post['paste_access']) || ($post['paste_access'] != ACCESS_FREE && $post['paste_access'] != ACCESS_UNLISTED))
+		if (!isset($_POST['paste_access']) || ($_POST['paste_access'] != ACCESS_FREE && $_POST['paste_access'] != ACCESS_UNLISTED))
 		{
 			$this->setErrorStr("Couldn't retrieve valid access data in the posted form");
 			return false;
@@ -191,9 +194,9 @@ class Paste extends Base
 		return true;
 	}
 
-	public function isPosted(&$post)
+	public function isPosted()
 	{
-		return (isset($post['paste_post']));
+		return (isset($_POST, $_POST['paste_post']));
 	}
 
 	public function loadFromId($id)

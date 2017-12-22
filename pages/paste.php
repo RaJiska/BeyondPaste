@@ -4,7 +4,7 @@ function show_page()
 {
 	global $Paste;
 
-	if ($Paste->isPosted($_POST))
+	if ($Paste->isPosted())
 	{
 		if (!pastePublish($Paste))
 		{
@@ -378,9 +378,9 @@ function show_page()
 
 function pastePublish(&$Paste)
 {
-	if (!$Paste->isPostValid($_POST))
+	if (!$Paste->isPostValid())
 		return false;
-	$Paste->loadFromPost($_POST);
+	$Paste->loadFromPost();
 	if (!$Paste->publish())
 		return false;
 	return true;
