@@ -11,11 +11,6 @@ class Base
 		$this->config = $config;
 	}
 
-	public function getConfig($config)
-	{
-		return $this->config;
-	}
-
 	public function setDatabase($Database)
 	{
 		$this->Database = $Database;

@@ -79,7 +79,7 @@ class Database extends PDO
 		$this->echo_errors = $echo_errors;
 	}
 
-	public function getEchoErrors($echo_errors)
+	public function getEchoErrors()
 	{
 		return $this->echo_errors;
 	}

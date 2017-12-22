@@ -5,8 +5,6 @@ class Access extends Base
 	private $type;
 	private $parameter;
 
-	private $data;
-
 	public function __construct($type, $parameter = null)
 	{
 		$this->type = $type;
