@@ -12,9 +12,9 @@ function show_page()
 			<div class="col-2"></div>
 
 			<div class="col-2 pl-2">
-				<button type="button" class="btn btn-secondary btn-block" onclick="window.location='?page=paste'">
+				<button type="button" class="btn btn-secondary btn-block" onclick="window.location='/'">
 					<span class="pr-1">
-						<img src="resources/external/octicons/img/file.svg" width=16 height=32 onerror="this.src='lib/octicons/grabber.png'">
+						<img src="/resources/external/octicons/img/file.svg" width=12 height=24>
 					</span>
 					NEW PASTE
 				</button>
@@ -25,7 +25,7 @@ function show_page()
 	<hr>
 
 	<div class="alert alert-danger">
-		<span class="lead">Are you lost ?</span><br>
+		<span class="lead"><strong>Are you lost ?</strong></span><br>
 		The page you were looking for could not be found :(
 	</div>
 	<?php

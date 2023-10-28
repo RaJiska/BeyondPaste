@@ -4,7 +4,6 @@ class Database extends PDO
 {
 	private $echo_errors;
 	private $config;
-	private $log_fd = null;
 
 	public function __construct($config, $echo_errors = false)
 	{
@@ -24,7 +23,6 @@ class Database extends PDO
 		}
 		catch (PDOException $e)
 		{
-			$this->logError($e, "CONNECTION");
 			throw $e;
 		}
 	}
@@ -50,26 +48,10 @@ class Database extends PDO
 		catch (PDOException $e)
 		{
 			$this->rollBack();
-			$this->logError($e, "TRANSACTION");
 			throw $e;
 		}
 
 		return $return;
-	}
-
-	private function logError($e, $type = "GENERAL")
-	{
-		if ($this->echo_errors)
-			echo('Database error: ' . htmlspecialchars($e->getMessage()));
-		if (!$this->log_fd)
-		{
-			$exists = (file_exists("log/" . $this->config['db']['logfile']));
-			if (!($this->log_fd = fopen("log/" . $this->config['db']['logfile'], 'a')))
-				return false;
-			if (!$exists)
-				chmod("log/" . $this->config['db']['logfile'], 0640);
-		}
-		return (fwrite($this->log_fd, "[" . $type . "] - " . date('m/d/Y h:i:s a', time()) . " - " . $e->getMessage()));
 	}
 
 	/* Setters / Getters */
@@ -93,5 +75,6 @@ try
 }
 catch (PDOException $e)
 {
+	error_log("Could not connect to the database: " . $e->getMessage());
 	die("Could not connect to the database");
 }

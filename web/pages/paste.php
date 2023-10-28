@@ -20,14 +20,14 @@ function show_page()
 		{
 			?>
 			<script>
-				window.location.href = "?page=view" + <?php echo json_encode($Paste->getPasteLink()); ?>; 
+				window.location.href = "/" + <?php echo json_encode($Paste->getPasteLink()); ?>; 
 			</script>
 			<?php
 		}
 	}
 
 	?>
-	<form action="?page=paste" method="POST" onsubmit="return paste_formIsValid()" >
+	<form action="/" method="POST" onsubmit="return paste_formIsValid()" >
 		<div class="mt-3">
 			<h2>New Paste</h2>
 			<hr>
@@ -66,7 +66,7 @@ function show_page()
 				<div class="form-check pt-4">
 					<label class="form-check-label">
 						<input type="checkbox" id="paste_autodestroy" name="paste_autodestroy"> 
-							<img src="resources/external/octicons/img/eye.svg" width=16 height=32 onerror="this.src='lib/octicons/eye.png'">
+							<img src="/resources/external/octicons/img/eye.svg" width=16 height=32>
 							Automatically destroy after reading
 						</input>
 					</label>

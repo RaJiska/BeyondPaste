@@ -34,7 +34,7 @@ class Access extends Base
 	{
 		if ($this->type != ACCESS_UNLISTED)
 			return "";
-		return ("&token=" . $this->parameter);
+		return ("?token=" . $this->parameter);
 	}
 
 	private function checkAllowedFree()

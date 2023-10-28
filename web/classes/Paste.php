@@ -7,12 +7,12 @@ class Paste extends Base
 	private $owner_ip = null;
 	private $creation_epoch = null;
 	private $expiration_epoch = null;
-	private $autodestroy = null;
+	private $autodestroy = 0;
 	private $syntax_highlighting = null;
 	private $content = null;
 	private $Access = null;
-	private $views = null;
-	private $deleted = null;
+	private $views = 0;
+	private $deleted = 0;
 
 	private $is_loaded = false;
 	private $is_published = false;
@@ -47,8 +47,8 @@ class Paste extends Base
 		}
 		catch (PDOException $e)
 		{
-			echo $e->getMessage();
-			$this->setErrorStr("Paste Publish: SQL Request Failed");
+			error_log("Failed publishing: " . $e->getMessage());
+			$this->setErrorStr("Paste Publish: Request Failed");
 			return false;
 		}
 
@@ -79,7 +79,7 @@ class Paste extends Base
 		}
 		catch (PDOException $e)
 		{
-			$this->setErrorStr("Paste Update: SQL Request Failed");
+			$this->setErrorStr("Paste Update: Request Failed");
 			return false;
 		}
 
@@ -106,7 +106,7 @@ class Paste extends Base
 		}
 		catch (PDOException $e)
 		{
-			$this->setErrorStr("Paste Delete: SQL Request Failed");
+			$this->setErrorStr("Paste Delete: Request Failed");
 			return false;
 		}
 
@@ -137,11 +137,11 @@ class Paste extends Base
 		$this->owner_ip = $_SERVER['REMOTE_ADDR'];
 		$this->creation_epoch = time();
 		$this->expiration_epoch = $this->expirationToTimeStamp($_POST['paste_expiration']);
-		$this->autodestroy = isset($_POST['paste_autodestroy']);
+		$this->autodestroy = isset($_POST['paste_autodestroy']) ? 1 : 0;
 		$this->syntax_highlighting = $_POST['paste_language'];
 		$this->content = $_POST['paste_content'];
 		$this->views = 0;
-		$this->deleted = false;
+		$this->deleted = 0;
 
 		$this->is_loaded = true;
 		$this->is_published = false;
@@ -205,7 +205,7 @@ class Paste extends Base
 
 		if (!is_numeric($id) || $id < 1)
 		{
-			$this->setErrorStr("Paste ID must be a positive number");
+			$this->setErrorStr("Paste ID must be a positive number: " . $id);
 			return false;
 		}
 
@@ -247,12 +247,12 @@ class Paste extends Base
 		$this->owner_ip = null;
 		$this->creation_epoch = null;
 		$this->expiration_epoch = null;
-		$this->autodestroy = null;
+		$this->autodestroy = 0;
 		$this->syntax_highlighting = null;
 		$this->content = null;
-		$this->access = null;
-		$this->views = null;
-		$this->deleted = null;
+		$this->Access = null;
+		$this->views = 0;
+		$this->deleted = 0;
 
 		$this->is_loaded = false;
 		$this->is_published = false;
@@ -262,7 +262,7 @@ class Paste extends Base
 	{
 		if (!$this->is_loaded)
 			return "";
-		return ("&pid=" . $this->id . $this->Access->paramToLink());
+		return ($this->id . $this->Access->paramToLink());
 	}
 
 	private function expirationToTimestamp(&$expiration)

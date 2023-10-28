@@ -1,0 +1,2 @@
+* */1 * * * (SCRIPT_NAME=/cron/cron.php SCRIPT_FILENAME=/var/www/html/cron/cron.php REQUEST_METHOD=GET cgi-fcgi -bind -connect fpm:9000)
+0 0   1 * * (SCRIPT_NAME=/cron/clean.php SCRIPT_FILENAME=/var/www/html/cron/cleam.php REQUEST_METHOD=GET cgi-fcgi -bind -connect fpm:9000)

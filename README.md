@@ -12,6 +12,14 @@ The footer can be entirely modified, but keep in mind authors should always be c
 * One Time Read Paste
 * Paste auto remove
 
+# Installation — Docker
+
+1. Create `.env` file from `.env.sample` and edit its values to your liking
+2. If you need access via your domain or TLS, edit [nginx.conf](config/nginx.conf) accordingly
+3. Run `docker-compose up`
+
+BeyondPaste should now be running on `localhost:8080`.
+
 # Screenshots
 ### **Paste creation**
 ![alt text](https://i.gyazo.com/c6270e7c1068d4bbb463e10c2940a382.png)  

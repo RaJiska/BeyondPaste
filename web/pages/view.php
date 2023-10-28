@@ -11,12 +11,12 @@ function show_page()
 	else
 		$paste_data['content'] = $error_str;
 
-	$url_pid = ((isset($_GET['pid'])) ? "&pid=" . $_GET['pid'] : "");
-	$url_token = ((isset($_GET['token'])) ? "&token=" . $_GET['token'] : "");
+	$pid = ((isset($_GET['pid'])) ? $_GET['pid'] : "");
+	$url_token = ((isset($_GET['token'])) ? "?token=" . $_GET['token'] : "");
 
 	?>
 	<script>
-		var raw_link = '<?php echo "?page=raw" . $url_pid . $url_token; ?>';
+		var raw_link = '<?php echo "/" . $pid . "/raw" . $url_token; ?>';
 	</script>
 	<?php
 
@@ -37,16 +37,16 @@ function pasteViewDesign(&$paste_data)
 			<div class="col-2 pr-2">
 				<button type="button" class="btn btn-secondary btn-block" onclick="window.location=raw_link">
 					<span class="pr-1">
-						<img src="resources/external/octicons/img/grabber.svg" width=16 height=32 onerror="this.src='lib/octicons/grabber.png'">
+						<img src="/resources/external/octicons/img/grabber.svg" width=16 height=32>
 					</span>
 					RAW
 				</button>
 			</div>
 
 			<div class="col-2 pl-2">
-				<button type="button" class="btn btn-secondary btn-block" onclick="window.location='?page=paste'">
+				<button type="button" class="btn btn-secondary btn-block" onclick="window.location='/'">
 					<span class="pr-1">
-						<img src="resources/external/octicons/img/file.svg" width=16 height=32 onerror="this.src='lib/octicons/grabber.png'">
+						<img src="/resources/external/octicons/img/file.svg" width=16 height=32>
 					</span>
 					NEW PASTE
 				</button>
@@ -61,7 +61,7 @@ function pasteViewDesign(&$paste_data)
 	{
 	?>
 		<div class="alert alert-info" role="alert">
-			<img src="resources/external/octicons/img/info.svg" width=16 height=32 onerror="this.src='lib/octicons/grabber.png'">
+			<img src="/resources/external/octicons/img/info.svg" width=16 height=32>
 			This paste is set to destroy upon the first read. Refreshing the page, viewing the paste raw, and any other action that may require your page to reload would result in the paste deleting itself.
 		</div>
 	<?php

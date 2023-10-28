@@ -18,10 +18,10 @@ class Page Extends Base
 				<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">
 				<head>
 				<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />
-				<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/external/bootstrap/css/bootstrap.min.css\" />
-				<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/external/bootstrap-select/css/bootstrap-select.css\" />
-				<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/external/geshicss/css/dawn.css\" />
-				<link rel=\"stylesheet\" type=\"text/css\" href=\"resources/css/main.css\" />
+				<link rel=\"stylesheet\" type=\"text/css\" href=\"/resources/external/bootstrap/css/bootstrap.min.css\" />
+				<link rel=\"stylesheet\" type=\"text/css\" href=\"/resources/external/bootstrap-select/css/bootstrap-select.css\" />
+				<link rel=\"stylesheet\" type=\"text/css\" href=\"/resources/external/geshicss/css/dawn.css\" />
+				<link rel=\"stylesheet\" type=\"text/css\" href=\"/resources/css/main.css\" />
 				<title>$headerTitle</title>
 				</head>
 				<body>
@@ -47,14 +47,14 @@ class Page Extends Base
 				</div>
 
 				<div class=\"footer\">
-				<center>Powered by <a href=\"https://github.com/RaJiska/BeyondPaste\">BeyondPaste</a> <img src=\"resources/external/octicons/img/octoface.svg\" width=12 height=24 onerror=\"this.src='lib/octicons/eye.png'\">. Copyright Doriann \"Ra'Jiska\" Corlouër ©</center>
+				<center>Powered by <a href=\"https://github.com/RaJiska/BeyondPaste\">BeyondPaste</a> <img src=\"/resources/external/octicons/img/octoface.svg\" width=12 height=24>. Copyright Doriann \"Ra'Jiska\" Corlouër ©</center>
 				</div>
 
 				<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>
 				<script src=\"https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js\"></script>
-				<script src=\"resources/external/bootstrap/js/bootstrap.min.js\"></script>
-				<script src=\"resources/external/bootstrap-select/js/bootstrap-select.min.js\"></script>
-				<script src=\"resources/js/beyondpaste.js\"></script>
+				<script src=\"/resources/external/bootstrap/js/bootstrap.min.js\"></script>
+				<script src=\"/resources/external/bootstrap-select/js/bootstrap-select.min.js\"></script>
+				<script src=\"/resources/js/beyondpaste.js\"></script>
 				<script type=\"text/javascript\">
 				$(\'.selectpicker\').selectpicker({ });
 				</script>
@@ -81,6 +81,10 @@ class Page Extends Base
 			$this->title = 'Raw Paste';
 			$this->output_raw = true;
 			$this->page_path = 'pages/raw.php';
+			break;
+		case '403':
+			$this->title = '403';
+			$this->page_path = 'pages/status/403.php';
 			break;
 		default:
 			$this->title = '404';
