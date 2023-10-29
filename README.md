@@ -16,7 +16,7 @@ The footer can be entirely modified, but keep in mind authors should always be c
 
 1. Create `.env` file from `.env.sample` and edit its values to your liking
 2. If you need access via your domain or TLS, edit [nginx.conf](config/nginx.conf) accordingly
-3. Run `docker-compose up`
+3. Run `docker compose up`
 
 BeyondPaste should now be running on `localhost:8080`.
 
