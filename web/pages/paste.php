@@ -223,7 +223,7 @@ function show_page()
 						<option value="netrexx">NetRexx</option>
 						<option value="newlisp">newlisp</option>
 						<option value="nginx">nginx</option>
-						<option value="nimrod">Nimrod</option>
+						<option value="nim">Nim</option>
 						<option value="nsis">NSIS</option>
 						<option value="oberon2">Oberon-2</option>
 						<option value="objc">Objective-C</option>
